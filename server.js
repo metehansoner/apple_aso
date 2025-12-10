@@ -265,6 +265,54 @@ app.post('/api/process-appinfo', (req, res) => {
     }
 });
 
+app.post('/api/process-appinfo-with-state', (req, res) => {
+    try {
+        const { jsonData, selectedState } = req.body;
+        
+        if (!jsonData || !selectedState) {
+            return res.status(400).json({ error: 'JSON verisi ve state gereklidir' });
+        }
+
+        const data = jsonData.data || [];
+        const included = jsonData.included || [];
+        
+        if (!Array.isArray(data) || data.length === 0) {
+            return res.status(400).json({ error: 'JSON data array içermelidir' });
+        }
+
+        const selectedAppInfo = data.find(item => 
+            item.attributes?.state === selectedState
+        );
+
+        if (!selectedAppInfo) {
+            return res.status(400).json({ error: `${selectedState} state bulunamadı` });
+        }
+
+        const appInfoLocalizationIds = selectedAppInfo.relationships?.appInfoLocalizations?.data || [];
+        
+        const localizationIds = appInfoLocalizationIds.map(item => item.id);
+
+        const appInfoLocalizations = included.filter(item => 
+            item.type === 'appInfoLocalizations' && localizationIds.includes(item.id)
+        );
+
+        const processedData = appInfoLocalizations.map(item => ({
+            id: item.id,
+            countryCode: item.attributes?.locale || 'N/A',
+            name: item.attributes?.name || 'N/A',
+            subtitle: item.attributes?.subtitle || 'N/A'
+        }));
+
+        res.json({ 
+            success: true, 
+            message: `${processedData.length} kayıt başarıyla işlendi (${selectedState})`,
+            data: processedData 
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Bir hata oluştu: ' + error.message });
+    }
+});
+
 app.post('/api/compare-csv-appinfo', (req, res) => {
     try {
         const { csvData, originalData } = req.body;

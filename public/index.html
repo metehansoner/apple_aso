@@ -460,6 +460,57 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             transition: width 0.3s ease;
         }
+
+        #stateSelectionSection {
+            margin-top: 30px;
+        }
+
+        .state-option {
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .state-option:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .state-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .state-option input[type="radio"] {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .state-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .state-badge {
+            background: #dc3545;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -592,6 +643,13 @@
             </form>
 
             <div id="messageNS" class="message"></div>
+
+            <div id="stateSelectionSection" class="results-section">
+                <h2>📋 App State Seçin</h2>
+                <p class="subtitle">Hangi state için işlem yapmak istiyorsunuz?</p>
+                <div id="stateOptions"></div>
+                <button id="selectStateBtn" style="margin-top: 20px; display: none;">Seçili State ile Devam Et</button>
+            </div>
 
             <div id="resultsSectionNS" class="results-section">
                 <div class="results-header">
@@ -1050,10 +1108,14 @@
         const executionSectionNS = document.getElementById('executionSectionNS');
         const executionResultsNS = document.getElementById('executionResultsNS');
         const executionCountNS = document.getElementById('executionCountNS');
+        const stateSelectionSection = document.getElementById('stateSelectionSection');
+        const stateOptions = document.getElementById('stateOptions');
+        const selectStateBtn = document.getElementById('selectStateBtn');
         
         let currentAppInfoData = [];
         let originalAppInfoData = [];
         let currentCsvDataNS = [];
+        let currentAppInfoJson = null;
 
         function showMessageNS(text, type) {
             messageDivNS.textContent = text;
@@ -1188,16 +1250,77 @@
 
             try {
                 const parsedJson = JSON.parse(jsonText);
+                currentAppInfoJson = parsedJson;
                 
                 submitBtnNS.disabled = true;
                 submitBtnNS.textContent = 'İşleniyor...';
 
-                const response = await fetch('/api/process-appinfo', {
+                const data = parsedJson.data || [];
+                const states = [...new Set(data.map(item => item.attributes?.state).filter(Boolean))];
+
+                if (states.length === 0) {
+                    showMessageNS('Hiçbir state bulunamadı!', 'error');
+                    return;
+                }
+
+                stateOptions.innerHTML = '';
+                states.forEach((state, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'state-option';
+                    
+                    const badgeHtml = state === 'PREPARE_FOR_SUBMISSION' 
+                        ? '<span class="state-badge">Yeni Versiyon - Güncellenmesi Gereken</span>' 
+                        : '';
+                    
+                    optionDiv.innerHTML = `
+                        <input type="radio" name="appState" id="state-${index}" value="${state}" ${index === 0 ? 'checked' : ''}>
+                        <label class="state-label" for="state-${index}">
+                            ${state}
+                            ${badgeHtml}
+                        </label>
+                    `;
+                    optionDiv.onclick = function() {
+                        document.getElementById(`state-${index}`).checked = true;
+                        document.querySelectorAll('.state-option').forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                    };
+                    if (index === 0) optionDiv.classList.add('selected');
+                    stateOptions.appendChild(optionDiv);
+                });
+
+                selectStateBtn.style.display = 'block';
+                stateSelectionSection.classList.add('show');
+                showMessageNS('State seçenekleri gösteriliyor', 'success');
+                
+            } catch (error) {
+                showMessageNS('Geçersiz JSON formatı! Lütfen doğru bir JSON girin.', 'error');
+            } finally {
+                submitBtnNS.disabled = false;
+                submitBtnNS.textContent = 'İşleme Devam Et';
+            }
+        });
+
+        selectStateBtn.addEventListener('click', async () => {
+            const selectedState = document.querySelector('input[name="appState"]:checked')?.value;
+            
+            if (!selectedState) {
+                showMessageNS('Lütfen bir state seçin', 'error');
+                return;
+            }
+
+            try {
+                selectStateBtn.disabled = true;
+                selectStateBtn.textContent = 'İşleniyor...';
+
+                const response = await fetch('/api/process-appinfo-with-state', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ jsonData: parsedJson })
+                    body: JSON.stringify({ 
+                        jsonData: currentAppInfoJson,
+                        selectedState: selectedState
+                    })
                 });
 
                 const result = await response.json();
@@ -1211,11 +1334,11 @@
                 }
                 
             } catch (error) {
-                showMessageNS('Geçersiz JSON formatı! Lütfen doğru bir JSON girin.', 'error');
+                showMessageNS('Hata oluştu: ' + error.message, 'error');
                 resultsSectionNS.classList.remove('show');
             } finally {
-                submitBtnNS.disabled = false;
-                submitBtnNS.textContent = 'İşleme Devam Et';
+                selectStateBtn.disabled = false;
+                selectStateBtn.textContent = 'Seçili State ile Devam Et';
             }
         });
 
