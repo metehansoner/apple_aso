@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AppStore Connect - JSON İşleyici</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 95%;
+            width: 100%;
+        }
+
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1400px;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1199px) {
+            .container {
+                max-width: 90%;
+            }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .url-info {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .url-info strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .url-info code {
+            background: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: block;
+            margin-top: 8px;
+            word-break: break-all;
+            font-size: 12px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results-section.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h2 {
+            color: #333;
+            font-size: 22px;
+        }
+
+        .record-count {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 13px;
+            color: #333;
+            max-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .country-code {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .description-cell {
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .keywords-cell {
+            max-width: 300px;
+            font-style: italic;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .id-cell {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #999;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        input[type="file"]:hover {
+            border-color: #764ba2;
+            background: #fff;
+        }
+
+        .changed-cell {
+            background-color: #ffebee !important;
+            color: #c62828 !important;
+            font-weight: 600;
+        }
+
+        .new-row {
+            background-color: #fff3e0 !important;
+        }
+
+        #csvSection {
+            margin-top: 30px;
+        }
+
+        #comparisonSection {
+            margin-top: 30px;
+        }
+
+        #curlSection {
+            margin-top: 30px;
+        }
+
+        #executionSection {
+            margin-top: 30px;
+        }
+
+        #executionResults {
+            margin-top: 20px;
+        }
+
+        .execution-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border-left: 4px solid;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .execution-item:hover {
+            transform: translateX(5px);
+        }
+
+        .execution-item.success {
+            border-left-color: #4caf50;
+            background: #f1f8f4;
+        }
+
+        .execution-item.error {
+            border-left-color: #f44336;
+            background: #fef5f5;
+        }
+
+        .execution-item.processing {
+            border-left-color: #ff9800;
+            background: #fff8f0;
+        }
+
+        .execution-status {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+
+        .execution-item.success .execution-status {
+            background: #4caf50;
+            color: white;
+        }
+
+        .execution-item.error .execution-status {
+            background: #f44336;
+            color: white;
+        }
+
+        .execution-item.processing .execution-status {
+            background: #ff9800;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .execution-info {
+            flex: 1;
+        }
+
+        .execution-country {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .execution-id {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .execution-message {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍎 AppStore Connect JSON İşleyici</h1>
+        <p class="subtitle">App Store Version Localizations verilerini işleyin</p>
+        
+        <div class="url-info">
+            <strong>📋 Lütfen aşağıdaki URL'den dönen JSON response'u girin:</strong>
+            <code>https://appstoreconnect.apple.com/iris/v1/appStoreVersionLocalizations</code>
+        </div>
+
+        <form id="jsonForm">
+            <label for="jsonInput">JSON Response:</label>
+            <textarea 
+                id="jsonInput" 
+                name="jsonInput" 
+                placeholder='{"data": [...], "links": {...}, ...}'
+                required
+            ></textarea>
+            
+            <button type="submit" id="submitBtn">İşleme Devam Et</button>
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <div id="resultsSection" class="results-section">
+            <div class="results-header">
+                <h2>📊 İşlenmiş Veriler</h2>
+                <span id="recordCount" class="record-count">0 Kayıt</span>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Country Code</th>
+                            <th>ID</th>
+                            <th>Keywords</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="csvSection" class="results-section">
+            <h2>📂 CSV Dosyası Karşılaştırma</h2>
+            <p class="subtitle">CSV dosyasını yükleyin ve değişiklikleri görün</p>
+            
+            <form id="csvForm">
+                <label for="csvFile">CSV Dosyası Seçin:</label>
+                <input type="file" id="csvFile" accept=".csv" required>
+                
+                <button type="submit" id="csvSubmitBtn">Karşılaştır</button>
+            </form>
+        </div>
+
+        <div id="comparisonSection" class="results-section">
+            <div class="results-header">
+                <h2>🔍 Karşılaştırma Sonuçları</h2>
+                <span id="comparisonCount" class="record-count">0 Kayıt</span>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Country Code</th>
+                            <th>ID</th>
+                            <th>Keywords</th>
+                        </tr>
+                    </thead>
+                    <tbody id="comparisonTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="curlSection" class="results-section">
+            <h2>🚀 Curl Komutu ile Güncelleme</h2>
+            <p class="subtitle">Curl komutunu yapıştırın, her ülke için otomatik güncelleme yapılacak</p>
+            
+            <form id="curlForm">
+                <label for="curlInput">Curl Komutu:</label>
+                <textarea 
+                    id="curlInput" 
+                    name="curlInput" 
+                    placeholder="curl 'https://...' -X PATCH -H 'Authorization: ...' --data-raw '{...}'"
+                    required
+                ></textarea>
+                
+                <button type="submit" id="curlSubmitBtn">Tüm Ülkeler İçin Çalıştır</button>
+            </form>
+        </div>
+
+        <div id="executionSection" class="results-section">
+            <div class="results-header">
+                <h2>⚡ Çalıştırma Sonuçları</h2>
+                <span id="executionCount" class="record-count">0/0 Tamamlandı</span>
+            </div>
+            <div id="executionResults"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('jsonForm');
+        const jsonInput = document.getElementById('jsonInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const messageDiv = document.getElementById('message');
+        const resultsSection = document.getElementById('resultsSection');
+        const tableBody = document.getElementById('tableBody');
+        const recordCount = document.getElementById('recordCount');
+        
+        const csvForm = document.getElementById('csvForm');
+        const csvFile = document.getElementById('csvFile');
+        const csvSubmitBtn = document.getElementById('csvSubmitBtn');
+        const csvSection = document.getElementById('csvSection');
+        const comparisonSection = document.getElementById('comparisonSection');
+        const comparisonTableBody = document.getElementById('comparisonTableBody');
+        const comparisonCount = document.getElementById('comparisonCount');
+        
+        const curlForm = document.getElementById('curlForm');
+        const curlInput = document.getElementById('curlInput');
+        const curlSubmitBtn = document.getElementById('curlSubmitBtn');
+        const curlSection = document.getElementById('curlSection');
+        const executionSection = document.getElementById('executionSection');
+        const executionResults = document.getElementById('executionResults');
+        const executionCount = document.getElementById('executionCount');
+        
+        let currentCsvData = [];
+
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 5000);
+        }
+
+        function displayResults(data) {
+            tableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td><span class="country-code">${item.countryCode}</span></td>
+                    <td class="id-cell">${item.id}</td>
+                    <td class="keywords-cell">${item.keywords}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+
+            recordCount.textContent = `${data.length} Kayıt`;
+            resultsSection.classList.add('show');
+            csvSection.classList.add('show');
+        }
+
+        function displayComparison(data) {
+            comparisonTableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                if (item.isNew) {
+                    row.classList.add('new-row');
+                }
+                
+                const keyClass = item.keywordsChanged ? 'changed-cell' : '';
+                
+                row.innerHTML = `
+                    <td><span class="country-code">${item.countryCode}</span></td>
+                    <td class="id-cell">${item.id}</td>
+                    <td class="keywords-cell ${keyClass}">${item.keywords}</td>
+                `;
+                
+                comparisonTableBody.appendChild(row);
+            });
+
+            comparisonCount.textContent = `${data.length} Kayıt`;
+            comparisonSection.classList.add('show');
+            curlSection.classList.add('show');
+        }
+
+        function displayExecutionResults(results) {
+            executionResults.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                const item = document.createElement('div');
+                item.className = `execution-item ${result.status}`;
+                
+                const statusIcon = result.status === 'success' ? '✓' : '✗';
+                
+                item.innerHTML = `
+                    <div class="execution-status">${statusIcon}</div>
+                    <div class="execution-info">
+                        <div class="execution-country">
+                            <span class="country-code">${result.countryCode}</span>
+                        </div>
+                        <div class="execution-id">ID: ${result.id}</div>
+                        <div class="execution-message">${result.message}</div>
+                    </div>
+                `;
+                
+                executionResults.appendChild(item);
+            });
+            
+            const successCount = results.filter(r => r.status === 'success').length;
+            executionCount.textContent = `${successCount}/${results.length} Başarılı`;
+            executionSection.classList.add('show');
+        }
+
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            const result = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                const parts = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
+                    
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        parts.push(current);
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                parts.push(current);
+                
+                if (parts.length >= 4) {
+                    result.push({
+                        countryCode: parts[0],
+                        id: parts[1],
+                        description: parts[2],
+                        keywords: parts[3]
+                    });
+                }
+            }
+            
+            return result;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const jsonText = jsonInput.value.trim();
+            
+            if (!jsonText) {
+                showMessage('Lütfen JSON verisini girin', 'error');
+                return;
+            }
+
+            try {
+                const parsedJson = JSON.parse(jsonText);
+                
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'İşleniyor...';
+
+                const response = await fetch('/api/process-json', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ jsonData: parsedJson })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                    displayResults(result.data);
+                } else {
+                    showMessage('Hata: ' + result.error, 'error');
+                    resultsSection.classList.remove('show');
+                }
+            } catch (error) {
+                showMessage('Geçersiz JSON formatı! Lütfen doğru bir JSON girin.', 'error');
+                resultsSection.classList.remove('show');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'İşleme Devam Et';
+            }
+        });
+
+        csvForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const file = csvFile.files[0];
+            
+            if (!file) {
+                showMessage('Lütfen bir CSV dosyası seçin', 'error');
+                return;
+            }
+
+            try {
+                const text = await file.text();
+                const csvData = parseCSV(text);
+                currentCsvData = csvData;
+                
+                csvSubmitBtn.disabled = true;
+                csvSubmitBtn.textContent = 'Karşılaştırılıyor...';
+
+                const response = await fetch('/api/compare-csv', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ csvData })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage(result.message, 'success');
+                    displayComparison(result.data);
+                } else {
+                    showMessage('Hata: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('CSV dosyası işlenirken hata oluştu: ' + error.message, 'error');
+            } finally {
+                csvSubmitBtn.disabled = false;
+                csvSubmitBtn.textContent = 'Karşılaştır';
+            }
+        });
+
+        curlForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const curlCommand = curlInput.value.trim();
+            
+            if (!curlCommand) {
+                showMessage('Lütfen curl komutunu girin', 'error');
+                return;
+            }
+
+            if (currentCsvData.length === 0) {
+                showMessage('Önce CSV dosyasını yükleyin', 'error');
+                return;
+            }
+
+            try {
+                curlSubmitBtn.disabled = true;
+                curlSubmitBtn.textContent = 'Çalıştırılıyor...';
+                
+                executionResults.innerHTML = '<div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>';
+                executionSection.classList.add('show');
+
+                currentCsvData.forEach((row, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'execution-item processing';
+                    item.id = `exec-${index}`;
+                    
+                    item.innerHTML = `
+                        <div class="execution-status">⏳</div>
+                        <div class="execution-info">
+                            <div class="execution-country">
+                                <span class="country-code">${row.countryCode}</span>
+                            </div>
+                            <div class="execution-id">ID: ${row.id}</div>
+                            <div class="execution-message">İşleniyor...</div>
+                        </div>
+                    `;
+                    
+                    executionResults.appendChild(item);
+                });
+
+                const response = await fetch('/api/execute-curl', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        curlCommand, 
+                        csvData: currentCsvData 
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage('Tüm işlemler tamamlandı!', 'success');
+                    displayExecutionResults(result.results);
+                } else {
+                    showMessage('Hata: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessage('Curl çalıştırılırken hata oluştu: ' + error.message, 'error');
+            } finally {
+                curlSubmitBtn.disabled = false;
+                curlSubmitBtn.textContent = 'Tüm Ülkeler İçin Çalıştır';
+            }
+        });
+    </script>
+</body>
+</html>
+

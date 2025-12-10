@@ -1,0 +1,20 @@
+curl 'https://appstoreconnect.apple.com/iris/v1/appStoreVersionLocalizations/885a5c77-8fab-42df-9736-b9c0d1bdef8d' \
+  -X 'PATCH' \
+  -H 'accept: application/vnd.api+json' \
+  -H 'accept-language: tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7' \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: application/vnd.api+json' \
+  -b 's_cc=true; s_fid=4DF6A3F8F9FA3B5F-363A3E258796EE0C; s_vi=[CS]v1|349CEA75C9E65C2A-40000F72E00D140B[CE]; dslang=TR-TR; site=TUR; geo=TR; dssid2=f0831b73-3d81-4f3a-988f-a8ab0124608a; dssf=1; as_pcts=5bgbtxLux3dgZpQjVSTiI-7AZTwSQL1nSbjqVoVt034iU:5gPRasg2t_u2WFkFTjFm+cbegcyO2uU53+U_vwOqOKP; as_dc=ucp4; as_sfa=Mnx0cnx0cnx8dHJfVFJ8Y29uc3VtZXJ8aW50ZXJuZXR8MHwwfDE; as_rumid=a120b30d-0953-4a02-a920-92ce0b3edda8; s_sq=%5B%5BB%5D%5D; shld_bt_m=RPYmY7aq1MXjrGZL651tKg|1765407453|Gfw7OR-MbIPc8I_akrQ_Wg|HQntWu7KIBxIzg1pL5Lyn2bu6vQ; shld_bt_ck=x7u-1yZUHabRVYANaj8bWg|1765407453|hMFw8RI7QfVx-acUYR8sexaG56aDZdwRoHwxcF6cPOoA4yhEQz5ldSZI7trRqwut7ovbPDs3ttEGq_bN-03jTrxmmhWztXyx9Zdzh7TfSaW7Nf5R_LjowkLcUnKCnipaFtOqJXCxOcrzWAQ16Nzvw2YTL99pxy99Jl0cwBcrMnPE7JKmgdna_KK-2MDFbLKy05xjg65IzYOiHNwlQwimhdTUtdvnUmLqfr55LMIFDREmrlRhzSUO4TI_E44kszEVpgBYffpZfej8PJpa0KAoFOB1y6ZDryy0ljTWbleZnojo2IyaiZhlEHkf-TDpg8q8Ph7Xm5iOptyLg35foD-J1w|dg8o-yW8i0rGs3F61y7wMHvxe1s; pt-dm=v1~x~zl5ac27d~m~2~n~aos%3Asearch%3Aexplore~r~aos%3Asearch; itctx=eyJjcCI6Ijk2NGEyODFjLTY1OWEtNDViYS1iOTU0LWUzZTY2MzRjNmU2ZiIsImRzIjoxNzczMTk0MDIzMSwiZXgiOiIyMDI1LTEyLTExIDU6MjA6MTEifQ|mtnal6gb544eucpp11hn346l24|-D5CiFU6r1uwKVZV76QzMHw932U; itcdq=0; myacinfo=DAWTKNV323952cf8084a204fb20ab2508441a07d02d3e2ac9a4eb49dcc5d3fcc35a0662384efb3bfaa2f71fd837b0aa0bbdcfcbd53d20c19c1c49c0e3ff0b1727e9036ff903a6abd272f2683c001e8d753f09208ecf63e95518d49d302378dab357dcf14accee3419eaec655134b466216ad6fe33c49394562c072a5184c8525f09993333df96a51cec2e80025d27d06aed7a3a18b687eed918983d3332ff32c080326643384087aadca3e7019d2d29c34b2c92862bc556899afc6d5c782b28055121f138d26514aea536c1de5ff9c078d8d207dc91a321dd3afb583dac3e1844f78f7833c4a5753f0147bfc5d77232ca7d84eb51ee9977f2d0f5076a213d44f26220d7858b7bb2ba39a447660143fc66d6afdd2ab614f855eb12f329f556c166e25484644db61818b46dc7728addc3b6a8d3644c447e2c6674064b40e8fa2162d10c3f90df4de3716203bf9053bcc53f52d4a123ad9d06ec6203c5cff6458382b1c7ef6ad6b1e26915ab6efc32e2d2cf1d084b0c9f5fb3c8c7c88045f83ea4b75770dcc2a127a28ed62faabc17a007273c9f01a3769cbe01ef057122b97cedc063706107a79bc593787aa285b7c76e276db1637af4b0d4d5e56365a034b23f71c032cdfd8a86cc0de7428955bf77c6ceb61666c7a0e01c11d971ddacc049616c510e5406cb16e42075299020ef90e2d81ce9da537270663f8675fcc18a45d67b5f9c08d11be546c15559a522a0a598aaa11a5063f9223e03b802843638a07c1697b329f844c583f38eebaea291ef37c19a1ea0fc9e823695904c0b0892b5468581776aa7d2bd1f9ff68e2f710d9079e3120a851f00e41ea87cea7e221f646f347427936019f5d21bb631993203721aa153d2f9c3b31d036f15299ae01518b51e399e339c0fb585a47V3; dc=st; dqsid=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NjU0MDE2MDksImp0aSI6IjJRc1NqSm0xczNxVEZueEk2Y25lcGcifQ.u-skkUZAphXM_-aW4396ScmGEiLL9tqgxQ4UylRloY8; rios=CJCuDBIQ9i1EPDpnSI+CpOXENIwBEQ==; wosid=6wGxlMgpYDxEFH1stXDzuM; woinst=220786' \
+  -H 'origin: https://appstoreconnect.apple.com' \
+  -H 'pragma: no-cache' \
+  -H 'priority: u=1, i' \
+  -H 'referer: https://appstoreconnect.apple.com/apps/6746278610/distribution/ios/version/inflight' \
+  -H 'sec-ch-ua: "Not;A=Brand";v="99", "Google Chrome";v="139", "Chromium";v="139"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'sec-ch-ua-platform: "macOS"' \
+  -H 'sec-fetch-dest: empty' \
+  -H 'sec-fetch-mode: cors' \
+  -H 'sec-fetch-site: same-origin' \
+  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36' \
+  -H 'x-csrf-itc: [asc-ui]' \
+  --data-raw '{"data":{"type":"appStoreVersionLocalizations","id":"885a5c77-8fab-42df-9736-b9c0d1bdef8d","attributes":{"keywords":"couple,ldr,location,relationship,anniversary,countdown,tracker,calendar,partner,memory,todo,mood,map"}}}'
