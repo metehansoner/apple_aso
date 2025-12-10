@@ -42,10 +42,35 @@
             }
         }
 
+        .main-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .header-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
         h1 {
             color: #333;
             margin-bottom: 10px;
-            font-size: 28px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            color: #666;
+            font-size: 16px;
+            font-weight: 500;
         }
 
         .subtitle {
@@ -515,8 +540,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>🍎 AppStore Connect JSON İşleyici</h1>
-        <p class="subtitle">App Store Version Localizations verilerini işleyin</p>
+        <div class="main-header">
+            <div class="header-icon">🍎</div>
+            <h1>AppStore Connect Otomasyon Aracı</h1>
+            <p class="header-subtitle">Keywords ve App Bilgilerini Toplu Güncelleme Sistemi</p>
+        </div>
         
         <div class="menu-tabs">
             <button class="menu-tab active" data-menu="keywords">Keywords</button>
