@@ -823,6 +823,7 @@
         
         let currentCsvData = [];
         let comparisonData = [];
+        let originalData = [];
 
         function showMessage(text, type) {
             messageDiv.textContent = text;
@@ -834,6 +835,7 @@
 
         function displayResults(data) {
             currentKeywordsData = data;
+            originalData = data;
             tableBody.innerHTML = '';
             
             data.forEach(item => {
@@ -969,12 +971,11 @@
                 }
                 parts.push(current);
                 
-                if (parts.length >= 4) {
+                if (parts.length >= 3) {
                     result.push({
                         countryCode: parts[0],
                         id: parts[1],
-                        description: parts[2],
-                        keywords: parts[3]
+                        keywords: parts[2]
                     });
                 }
             }
@@ -1047,7 +1048,10 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ csvData })
+                    body: JSON.stringify({ 
+                        csvData,
+                        originalData: originalData 
+                    })
                 });
 
                 const result = await response.json();

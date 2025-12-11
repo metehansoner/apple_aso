@@ -52,20 +52,22 @@ app.post('/api/process-json', (req, res) => {
 
 app.post('/api/compare-csv', (req, res) => {
     try {
-        const csvData = req.body.csvData;
+        const { csvData, originalData: requestOriginalData } = req.body;
         
         if (!csvData || !Array.isArray(csvData)) {
             return res.status(400).json({ error: 'CSV verisi bulunamadı' });
         }
 
-        if (originalData.length === 0) {
+        const dataToCompare = requestOriginalData || originalData;
+
+        if (!dataToCompare || dataToCompare.length === 0) {
             return res.status(400).json({ error: 'Önce JSON verisini yüklemelisiniz' });
         }
 
         const comparisonResults = [];
 
         csvData.forEach(csvRow => {
-            const original = originalData.find(item => 
+            const original = dataToCompare.find(item => 
                 item.id === csvRow.id && item.countryCode === csvRow.countryCode
             );
 
