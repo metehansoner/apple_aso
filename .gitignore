@@ -1,0 +1,7 @@
+node_modules/
+*.log
+.DS_Store
+output.csv
+keywords_export.csv
+appinfo_export.csv
+
