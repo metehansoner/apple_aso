@@ -643,7 +643,7 @@
 
         <div id="curlSection" class="results-section">
             <h2>🚀 Curl Komutu ile Güncelleme</h2>
-            <p class="subtitle">Curl komutunu yapıştırın, her ülke için otomatik güncelleme yapılacak</p>
+            <p class="subtitle">Curl komutunu yapıştırın. Sadece değişiklik olan ülkeler için otomatik güncelleme yapılacak.</p>
             
             <form id="curlForm">
                 <label for="curlInput">Curl Komutu:</label>
@@ -654,7 +654,7 @@
                     required
                 ></textarea>
                 
-                <button type="submit" id="curlSubmitBtn">Tüm Ülkeler İçin Çalıştır</button>
+                    <button type="submit" id="curlSubmitBtn">Sadece Değişenleri Güncelle</button>
             </form>
         </div>
 
@@ -752,7 +752,7 @@
 
             <div id="curlSectionNS" class="results-section">
                 <h2>🚀 Curl Komutu ile Güncelleme</h2>
-                <p class="subtitle">Curl komutunu yapıştırın, her ülke için otomatik güncelleme yapılacak</p>
+                <p class="subtitle">Curl komutunu yapıştırın. Sadece değişiklik olan ülkeler için otomatik güncelleme yapılacak.</p>
                 
                 <form id="curlFormNS2">
                     <label for="curlInputNS2">Curl Komutu:</label>
@@ -763,7 +763,7 @@
                         required
                     ></textarea>
                     
-                    <button type="submit" id="curlSubmitBtnNS2">Tüm Ülkeler İçin Çalıştır</button>
+                    <button type="submit" id="curlSubmitBtnNS2">Sadece Değişenleri Güncelle</button>
                 </form>
             </div>
 
@@ -822,6 +822,7 @@
         const executionCount = document.getElementById('executionCount');
         
         let currentCsvData = [];
+        let comparisonData = [];
 
         function showMessage(text, type) {
             messageDiv.textContent = text;
@@ -887,7 +888,10 @@
         downloadCsvBtnKeywords.addEventListener('click', downloadCSVKeywords);
 
         function displayComparison(data) {
+            comparisonData = data;
             comparisonTableBody.innerHTML = '';
+            
+            const changedCount = data.filter(item => item.keywordsChanged).length;
             
             data.forEach(item => {
                 const row = document.createElement('tr');
@@ -906,7 +910,7 @@
                 comparisonTableBody.appendChild(row);
             });
 
-            comparisonCount.textContent = `${data.length} Kayıt`;
+            comparisonCount.textContent = `${data.length} Kayıt (${changedCount} Değişiklik)`;
             comparisonSection.classList.add('show');
             curlSection.classList.add('show');
         }
@@ -1072,8 +1076,15 @@
                 return;
             }
 
-            if (currentCsvData.length === 0) {
-                showMessage('Önce CSV dosyasını yükleyin', 'error');
+            if (comparisonData.length === 0) {
+                showMessage('Önce CSV karşılaştırması yapın', 'error');
+                return;
+            }
+
+            const changedData = comparisonData.filter(item => item.keywordsChanged);
+            
+            if (changedData.length === 0) {
+                showMessage('Değişiklik bulunamadı! Güncellemeye gerek yok.', 'error');
                 return;
             }
 
@@ -1084,7 +1095,7 @@
                 executionResults.innerHTML = '<div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>';
                 executionSection.classList.add('show');
 
-                currentCsvData.forEach((row, index) => {
+                changedData.forEach((row, index) => {
                     const item = document.createElement('div');
                     item.className = 'execution-item processing';
                     item.id = `exec-${index}`;
@@ -1110,14 +1121,14 @@
                     },
                     body: JSON.stringify({ 
                         curlCommand, 
-                        csvData: currentCsvData 
+                        csvData: changedData 
                     })
                 });
 
                 const result = await response.json();
 
                 if (response.ok) {
-                    showMessage('Tüm işlemler tamamlandı!', 'success');
+                    showMessage(`${changedData.length} değişiklik için işlemler tamamlandı!`, 'success');
                     displayExecutionResults(result.results);
                 } else {
                     showMessage('Hata: ' + result.error, 'error');
@@ -1126,7 +1137,7 @@
                 showMessage('Curl çalıştırılırken hata oluştu: ' + error.message, 'error');
             } finally {
                 curlSubmitBtn.disabled = false;
-                curlSubmitBtn.textContent = 'Tüm Ülkeler İçin Çalıştır';
+                curlSubmitBtn.textContent = 'Sadece Değişenleri Güncelle';
             }
         });
 
@@ -1160,6 +1171,7 @@
         let originalAppInfoData = [];
         let currentCsvDataNS = [];
         let currentAppInfoJson = null;
+        let comparisonDataNS = [];
 
         function showMessageNS(text, type) {
             messageDivNS.textContent = text;
@@ -1193,7 +1205,10 @@
         }
 
         function displayComparisonNS(data) {
+            comparisonDataNS = data;
             comparisonTableBodyNS.innerHTML = '';
+            
+            const changedCount = data.filter(item => item.nameChanged || item.subtitleChanged).length;
             
             data.forEach(item => {
                 const row = document.createElement('tr');
@@ -1214,7 +1229,7 @@
                 comparisonTableBodyNS.appendChild(row);
             });
 
-            comparisonCountNS.textContent = `${data.length} Kayıt`;
+            comparisonCountNS.textContent = `${data.length} Kayıt (${changedCount} Değişiklik)`;
             comparisonSectionNS.classList.add('show');
             curlSectionNS2.classList.add('show');
         }
@@ -1480,8 +1495,15 @@
                 return;
             }
 
-            if (currentCsvDataNS.length === 0) {
-                showMessageNS('Önce CSV dosyasını yükleyin', 'error');
+            if (comparisonDataNS.length === 0) {
+                showMessageNS('Önce CSV karşılaştırması yapın', 'error');
+                return;
+            }
+
+            const changedData = comparisonDataNS.filter(item => item.nameChanged || item.subtitleChanged);
+            
+            if (changedData.length === 0) {
+                showMessageNS('Değişiklik bulunamadı! Güncellemeye gerek yok.', 'error');
                 return;
             }
 
@@ -1492,7 +1514,7 @@
                 executionResultsNS.innerHTML = '<div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>';
                 executionSectionNS.classList.add('show');
 
-                currentCsvDataNS.forEach((row, index) => {
+                changedData.forEach((row, index) => {
                     const item = document.createElement('div');
                     item.className = 'execution-item processing';
                     item.id = `exec-ns-${index}`;
@@ -1518,14 +1540,14 @@
                     },
                     body: JSON.stringify({ 
                         curlCommand, 
-                        csvData: currentCsvDataNS 
+                        csvData: changedData 
                     })
                 });
 
                 const result = await response.json();
 
                 if (response.ok) {
-                    showMessageNS('Tüm işlemler tamamlandı!', 'success');
+                    showMessageNS(`${changedData.length} değişiklik için işlemler tamamlandı!`, 'success');
                     displayExecutionResultsNS(result.results);
                 } else {
                     showMessageNS('Hata: ' + result.error, 'error');
@@ -1534,7 +1556,7 @@
                 showMessageNS('Curl çalıştırılırken hata oluştu: ' + error.message, 'error');
             } finally {
                 curlSubmitBtnNS2.disabled = false;
-                curlSubmitBtnNS2.textContent = 'Tüm Ülkeler İçin Çalıştır';
+                curlSubmitBtnNS2.textContent = 'Sadece Değişenleri Güncelle';
             }
         });
 
