@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,8 +71,13 @@
         }
 
         @keyframes flipHorizontal {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
+            0% {
+                transform: rotateY(0deg);
+            }
+
+            100% {
+                transform: rotateY(360deg);
+            }
         }
 
         h1 {
@@ -237,6 +243,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -458,8 +465,15 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
         .execution-info {
@@ -552,6 +566,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="main-header">
@@ -561,110 +576,106 @@
             <h1>AppStore Connect Otomasyon Aracı</h1>
             <p class="header-subtitle">Keywords ve App Bilgilerini Toplu Güncelleme Sistemi</p>
         </div>
-        
+
         <div class="menu-tabs">
             <button class="menu-tab active" data-menu="keywords">Keywords</button>
             <button class="menu-tab" data-menu="nameSubtitle">Name & Subtitle</button>
+            <button class="menu-tab" data-menu="whatsNew">What's New</button>
         </div>
 
         <div id="keywordsMenu" class="menu-content active">
-        
-        <div class="url-info">
-            <strong>📋 Lütfen aşağıdaki URL'den dönen JSON response'u girin:</strong>
-            <code>https://appstoreconnect.apple.com/iris/v1/appStoreVersionLocalizations?include</code>
-        </div>
 
-        <form id="jsonForm">
-            <label for="jsonInput">JSON Response:</label>
-            <textarea 
-                id="jsonInput" 
-                name="jsonInput" 
-                placeholder='{"data": [...], "links": {...}, ...}'
-                required
-            ></textarea>
-            
-            <button type="submit" id="submitBtn">İşleme Devam Et</button>
-        </form>
-
-        <div id="message" class="message"></div>
-
-        <div id="resultsSection" class="results-section">
-            <div class="results-header">
-                <h2>📊 İşlenmiş Veriler</h2>
-                <span id="recordCount" class="record-count">0 Kayıt</span>
+            <div class="url-info">
+                <strong>📋 Lütfen aşağıdaki URL'den dönen JSON response'u girin:</strong>
+                <code>https://appstoreconnect.apple.com/iris/v1/appStoreVersionLocalizations?include</code>
             </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Country Code</th>
-                            <th>ID</th>
-                            <th>Keywords</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                    </tbody>
-                </table>
-            </div>
-            <button id="downloadCsvBtnKeywords" style="margin-top: 20px;">📥 Mevcut Veriyi İndir</button>
-        </div>
 
-        <div id="csvSection" class="results-section">
-            <h2>📂 CSV Dosyası Karşılaştırma</h2>
-            <p class="subtitle">İndirdiğiniz CSV dosyasını düzenledikten sonra aynı formatta yükleyin. Değişiklikler kırmızı ile işaretlenecek.</p>
-            
-            <form id="csvForm">
-                <label for="csvFile">CSV Dosyası Seçin:</label>
-                <input type="file" id="csvFile" accept=".csv" required>
-                
-                <button type="submit" id="csvSubmitBtn">Karşılaştır</button>
+            <form id="jsonForm">
+                <label for="jsonInput">JSON Response:</label>
+                <textarea id="jsonInput" name="jsonInput" placeholder='{"data": [...], "links": {...}, ...}'
+                    required></textarea>
+
+                <button type="submit" id="submitBtn">İşleme Devam Et</button>
             </form>
-        </div>
 
-        <div id="comparisonSection" class="results-section">
-            <div class="results-header">
-                <h2>🔍 Karşılaştırma Sonuçları</h2>
-                <span id="comparisonCount" class="record-count">0 Kayıt</span>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Country Code</th>
-                            <th>ID</th>
-                            <th>Keywords</th>
-                        </tr>
-                    </thead>
-                    <tbody id="comparisonTableBody">
-                    </tbody>
-                </table>
-            </div>
-        </div>
+            <div id="message" class="message"></div>
 
-        <div id="curlSection" class="results-section">
-            <h2>🚀 Curl Komutu ile Güncelleme</h2>
-            <p class="subtitle">Curl komutunu yapıştırın. Sadece değişiklik olan ülkeler için otomatik güncelleme yapılacak.</p>
-            
-            <form id="curlForm">
-                <label for="curlInput">Curl Komutu:</label>
-                <textarea 
-                    id="curlInput" 
-                    name="curlInput" 
-                    placeholder="curl 'https://...' -X PATCH -H 'Authorization: ...' --data-raw '{...}'"
-                    required
-                ></textarea>
-                
+            <div id="resultsSection" class="results-section">
+                <div class="results-header">
+                    <h2>📊 İşlenmiş Veriler</h2>
+                    <span id="recordCount" class="record-count">0 Kayıt</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Country Code</th>
+                                <th>ID</th>
+                                <th>Keywords</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <button id="downloadCsvBtnKeywords" style="margin-top: 20px;">📥 Mevcut Veriyi İndir</button>
+            </div>
+
+            <div id="csvSection" class="results-section">
+                <h2>📂 CSV Dosyası Karşılaştırma</h2>
+                <p class="subtitle">İndirdiğiniz CSV dosyasını düzenledikten sonra aynı formatta yükleyin. Değişiklikler
+                    kırmızı ile işaretlenecek.</p>
+
+                <form id="csvForm">
+                    <label for="csvFile">CSV Dosyası Seçin:</label>
+                    <input type="file" id="csvFile" accept=".csv" required>
+
+                    <button type="submit" id="csvSubmitBtn">Karşılaştır</button>
+                </form>
+            </div>
+
+            <div id="comparisonSection" class="results-section">
+                <div class="results-header">
+                    <h2>🔍 Karşılaştırma Sonuçları</h2>
+                    <span id="comparisonCount" class="record-count">0 Kayıt</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Country Code</th>
+                                <th>ID</th>
+                                <th>Keywords</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="curlSection" class="results-section">
+                <h2>🚀 Curl Komutu ile Güncelleme</h2>
+                <p class="subtitle">Curl komutunu yapıştırın. Sadece değişiklik olan ülkeler için otomatik güncelleme
+                    yapılacak.</p>
+
+                <form id="curlForm">
+                    <label for="curlInput">Curl Komutu:</label>
+                    <textarea id="curlInput" name="curlInput"
+                        placeholder="curl 'https://...' -X PATCH -H 'Authorization: ...' --data-raw '{...}'"
+                        required></textarea>
+
                     <button type="submit" id="curlSubmitBtn">Sadece Değişenleri Güncelle</button>
-            </form>
-        </div>
-
-        <div id="executionSection" class="results-section">
-            <div class="results-header">
-                <h2>⚡ Çalıştırma Sonuçları</h2>
-                <span id="executionCount" class="record-count">0/0 Tamamlandı</span>
+                </form>
             </div>
-            <div id="executionResults"></div>
-        </div>
+
+            <div id="executionSection" class="results-section">
+                <div class="results-header">
+                    <h2>⚡ Çalıştırma Sonuçları</h2>
+                    <span id="executionCount" class="record-count">0/0 Tamamlandı</span>
+                </div>
+                <div id="executionResults"></div>
+            </div>
 
         </div>
 
@@ -676,13 +687,9 @@
 
             <form id="jsonFormNS">
                 <label for="jsonInputNS">JSON Response:</label>
-                <textarea 
-                    id="jsonInputNS" 
-                    name="jsonInputNS" 
-                    placeholder='{"data": [...], "included": [...], ...}'
-                    required
-                ></textarea>
-                
+                <textarea id="jsonInputNS" name="jsonInputNS" placeholder='{"data": [...], "included": [...], ...}'
+                    required></textarea>
+
                 <button type="submit" id="submitBtnNS">İşleme Devam Et</button>
             </form>
 
@@ -719,12 +726,13 @@
 
             <div id="csvSectionNS" class="results-section">
                 <h2>📂 CSV Dosyası Karşılaştırma</h2>
-                <p class="subtitle">İndirdiğiniz CSV dosyasını düzenledikten sonra aynı formatta yükleyin. Değişiklikler kırmızı ile işaretlenecek.</p>
-                
+                <p class="subtitle">İndirdiğiniz CSV dosyasını düzenledikten sonra aynı formatta yükleyin. Değişiklikler
+                    kırmızı ile işaretlenecek.</p>
+
                 <form id="csvFormNS">
                     <label for="csvFileNS">CSV Dosyası Seçin:</label>
                     <input type="file" id="csvFileNS" accept=".csv" required>
-                    
+
                     <button type="submit" id="csvSubmitBtnNS">Karşılaştır</button>
                 </form>
             </div>
@@ -752,17 +760,15 @@
 
             <div id="curlSectionNS" class="results-section">
                 <h2>🚀 Curl Komutu ile Güncelleme</h2>
-                <p class="subtitle">Curl komutunu yapıştırın. Sadece değişiklik olan ülkeler için otomatik güncelleme yapılacak.</p>
-                
+                <p class="subtitle">Curl komutunu yapıştırın. Sadece değişiklik olan ülkeler için otomatik güncelleme
+                    yapılacak.</p>
+
                 <form id="curlFormNS2">
                     <label for="curlInputNS2">Curl Komutu:</label>
-                    <textarea 
-                        id="curlInputNS2" 
-                        name="curlInputNS2" 
+                    <textarea id="curlInputNS2" name="curlInputNS2"
                         placeholder="curl 'https://...' -X PATCH -H 'Authorization: ...' --data-raw '{...}'"
-                        required
-                    ></textarea>
-                    
+                        required></textarea>
+
                     <button type="submit" id="curlSubmitBtnNS2">Sadece Değişenleri Güncelle</button>
                 </form>
             </div>
@@ -776,6 +782,99 @@
             </div>
         </div>
 
+        <div id="whatsNewMenu" class="menu-content">
+            <div class="url-info">
+                <strong>📋 Lütfen aşağıdaki URL'den dönen JSON response'u girin:</strong>
+                <code>https://appstoreconnect.apple.com/iris/v1/appStoreVersionLocalizations?include</code>
+            </div>
+
+            <form id="jsonFormWN">
+                <label for="jsonInputWN">JSON Response:</label>
+                <textarea id="jsonInputWN" name="jsonInputWN" placeholder='{"data": [...], "links": {...}, ...}'
+                    required></textarea>
+
+                <button type="submit" id="submitBtnWN">İşleme Devam Et</button>
+            </form>
+
+            <div id="messageWN" class="message"></div>
+
+            <div id="resultsSectionWN" class="results-section">
+                <div class="results-header">
+                    <h2>📊 What's New Verileri</h2>
+                    <span id="recordCountWN" class="record-count">0 Kayıt</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Locale (Ülke Kodu)</th>
+                                <th>ID</th>
+                                <th>What's New</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBodyWN">
+                        </tbody>
+                    </table>
+                </div>
+                <button id="downloadCsvBtnWN" style="margin-top: 20px;">📥 What's New CSV İndir</button>
+            </div>
+
+            <div id="csvSectionWN" class="results-section">
+                <h2>📂 CSV Dosyası Yükle</h2>
+                <p class="subtitle">What's New değerlerini güncellemek için düzenlenmiş CSV dosyasını yükleyin.</p>
+
+                <form id="csvFormWN">
+                    <label for="csvFileWN">CSV Dosyası Seçin:</label>
+                    <input type="file" id="csvFileWN" accept=".csv" required>
+
+                    <button type="submit" id="csvSubmitBtnWN">Karşılaştır</button>
+                </form>
+            </div>
+
+            <div id="comparisonSectionWN" class="results-section">
+                <div class="results-header">
+                    <h2>🔍 Karşılaştırma Sonuçları</h2>
+                    <span id="comparisonCountWN" class="record-count">0 Kayıt</span>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Locale (Ülke Kodu)</th>
+                                <th>ID</th>
+                                <th>What's New</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comparisonTableBodyWN">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="curlSectionWN" class="results-section">
+                <h2>🚀 Curl Komutu ile Güncelleme</h2>
+                <p class="subtitle">Curl komutunu yapıştırın. Sadece değişiklik olan ülkeler için otomatik güncelleme
+                    yapılacak.</p>
+
+                <form id="curlFormWN">
+                    <label for="curlInputWN">Curl Komutu:</label>
+                    <textarea id="curlInputWN" name="curlInputWN"
+                        placeholder="curl 'https://...' -X PATCH -H 'Authorization: ...' --data-raw '{...}'"
+                        required></textarea>
+
+                    <button type="submit" id="curlSubmitBtnWN">Sadece Değişenleri Güncelle</button>
+                </form>
+            </div>
+
+            <div id="executionSectionWN" class="results-section">
+                <div class="results-header">
+                    <h2>⚡ Çalıştırma Sonuçları</h2>
+                    <span id="executionCountWN" class="record-count">0/0 Tamamlandı</span>
+                </div>
+                <div id="executionResultsWN"></div>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -785,10 +884,10 @@
         menuTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const targetMenu = tab.dataset.menu;
-                
+
                 menuTabs.forEach(t => t.classList.remove('active'));
                 menuContents.forEach(c => c.classList.remove('active'));
-                
+
                 tab.classList.add('active');
                 document.getElementById(targetMenu + 'Menu').classList.add('active');
             });
@@ -802,9 +901,9 @@
         const tableBody = document.getElementById('tableBody');
         const recordCount = document.getElementById('recordCount');
         const downloadCsvBtnKeywords = document.getElementById('downloadCsvBtnKeywords');
-        
+
         let currentKeywordsData = [];
-        
+
         const csvForm = document.getElementById('csvForm');
         const csvFile = document.getElementById('csvFile');
         const csvSubmitBtn = document.getElementById('csvSubmitBtn');
@@ -812,7 +911,7 @@
         const comparisonSection = document.getElementById('comparisonSection');
         const comparisonTableBody = document.getElementById('comparisonTableBody');
         const comparisonCount = document.getElementById('comparisonCount');
-        
+
         const curlForm = document.getElementById('curlForm');
         const curlInput = document.getElementById('curlInput');
         const curlSubmitBtn = document.getElementById('curlSubmitBtn');
@@ -820,7 +919,7 @@
         const executionSection = document.getElementById('executionSection');
         const executionResults = document.getElementById('executionResults');
         const executionCount = document.getElementById('executionCount');
-        
+
         let currentCsvData = [];
         let comparisonData = [];
         let originalData = [];
@@ -837,16 +936,16 @@
             currentKeywordsData = data;
             originalData = data;
             tableBody.innerHTML = '';
-            
+
             data.forEach(item => {
                 const row = document.createElement('tr');
-                
+
                 row.innerHTML = `
                     <td><span class="country-code">${item.countryCode}</span></td>
                     <td class="id-cell">${item.id}</td>
                     <td class="keywords-cell">${item.keywords}</td>
                 `;
-                
+
                 tableBody.appendChild(row);
             });
 
@@ -868,7 +967,7 @@
                 const countryCode = item.countryCode || '';
                 const id = item.id || '';
                 const keywords = (item.keywords || '').replace(/"/g, '""');
-                
+
                 csvRows.push(`${countryCode},${id},"${keywords}"`);
             });
 
@@ -876,14 +975,14 @@
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            
+
             link.setAttribute('href', url);
             link.setAttribute('download', 'keywords_export.csv');
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             showMessage('CSV dosyası indirildi!', 'success');
         }
 
@@ -892,23 +991,23 @@
         function displayComparison(data) {
             comparisonData = data;
             comparisonTableBody.innerHTML = '';
-            
+
             const changedCount = data.filter(item => item.keywordsChanged).length;
-            
+
             data.forEach(item => {
                 const row = document.createElement('tr');
                 if (item.isNew) {
                     row.classList.add('new-row');
                 }
-                
+
                 const keyClass = item.keywordsChanged ? 'changed-cell' : '';
-                
+
                 row.innerHTML = `
                     <td><span class="country-code">${item.countryCode}</span></td>
                     <td class="id-cell">${item.id}</td>
                     <td class="keywords-cell ${keyClass}">${item.keywords}</td>
                 `;
-                
+
                 comparisonTableBody.appendChild(row);
             });
 
@@ -919,13 +1018,13 @@
 
         function displayExecutionResults(results) {
             executionResults.innerHTML = '';
-            
+
             results.forEach((result, index) => {
                 const item = document.createElement('div');
                 item.className = `execution-item ${result.status}`;
-                
+
                 const statusIcon = result.status === 'success' ? '✓' : '✗';
-                
+
                 item.innerHTML = `
                     <div class="execution-status">${statusIcon}</div>
                     <div class="execution-info">
@@ -936,10 +1035,10 @@
                         <div class="execution-message">${result.message}</div>
                     </div>
                 `;
-                
+
                 executionResults.appendChild(item);
             });
-            
+
             const successCount = results.filter(r => r.status === 'success').length;
             executionCount.textContent = `${successCount}/${results.length} Başarılı`;
             executionSection.classList.add('show');
@@ -948,18 +1047,18 @@
         function parseCSV(text) {
             const lines = text.split('\n');
             const result = [];
-            
+
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (!line) continue;
-                
+
                 const parts = [];
                 let current = '';
                 let inQuotes = false;
-                
+
                 for (let j = 0; j < line.length; j++) {
                     const char = line[j];
-                    
+
                     if (char === '"') {
                         inQuotes = !inQuotes;
                     } else if (char === ',' && !inQuotes) {
@@ -970,7 +1069,7 @@
                     }
                 }
                 parts.push(current);
-                
+
                 if (parts.length >= 3) {
                     result.push({
                         countryCode: parts[0],
@@ -979,15 +1078,15 @@
                     });
                 }
             }
-            
+
             return result;
         }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const jsonText = jsonInput.value.trim();
-            
+
             if (!jsonText) {
                 showMessage('Lütfen JSON verisini girin', 'error');
                 return;
@@ -995,7 +1094,7 @@
 
             try {
                 const parsedJson = JSON.parse(jsonText);
-                
+
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'İşleniyor...';
 
@@ -1027,9 +1126,9 @@
 
         csvForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const file = csvFile.files[0];
-            
+
             if (!file) {
                 showMessage('Lütfen bir CSV dosyası seçin', 'error');
                 return;
@@ -1039,7 +1138,7 @@
                 const text = await file.text();
                 const csvData = parseCSV(text);
                 currentCsvData = csvData;
-                
+
                 csvSubmitBtn.disabled = true;
                 csvSubmitBtn.textContent = 'Karşılaştırılıyor...';
 
@@ -1048,9 +1147,9 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         csvData,
-                        originalData: originalData 
+                        originalData: originalData
                     })
                 });
 
@@ -1072,9 +1171,9 @@
 
         curlForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const curlCommand = curlInput.value.trim();
-            
+
             if (!curlCommand) {
                 showMessage('Lütfen curl komutunu girin', 'error');
                 return;
@@ -1086,7 +1185,7 @@
             }
 
             const changedData = comparisonData.filter(item => item.keywordsChanged);
-            
+
             if (changedData.length === 0) {
                 showMessage('Değişiklik bulunamadı! Güncellemeye gerek yok.', 'error');
                 return;
@@ -1095,7 +1194,7 @@
             try {
                 curlSubmitBtn.disabled = true;
                 curlSubmitBtn.textContent = 'Çalıştırılıyor...';
-                
+
                 executionResults.innerHTML = '<div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>';
                 executionSection.classList.add('show');
 
@@ -1103,7 +1202,7 @@
                     const item = document.createElement('div');
                     item.className = 'execution-item processing';
                     item.id = `exec-${index}`;
-                    
+
                     item.innerHTML = `
                         <div class="execution-status">⏳</div>
                         <div class="execution-info">
@@ -1114,7 +1213,7 @@
                             <div class="execution-message">İşleniyor...</div>
                         </div>
                     `;
-                    
+
                     executionResults.appendChild(item);
                 });
 
@@ -1123,9 +1222,9 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
-                        curlCommand, 
-                        csvData: changedData 
+                    body: JSON.stringify({
+                        curlCommand,
+                        csvData: changedData
                     })
                 });
 
@@ -1170,7 +1269,7 @@
         const stateSelectionSection = document.getElementById('stateSelectionSection');
         const stateOptions = document.getElementById('stateOptions');
         const selectStateBtn = document.getElementById('selectStateBtn');
-        
+
         let currentAppInfoData = [];
         let originalAppInfoData = [];
         let currentCsvDataNS = [];
@@ -1189,17 +1288,17 @@
             currentAppInfoData = data;
             originalAppInfoData = data;
             tableBodyNS.innerHTML = '';
-            
+
             data.forEach(item => {
                 const row = document.createElement('tr');
-                
+
                 row.innerHTML = `
                     <td><span class="country-code">${item.countryCode}</span></td>
                     <td class="id-cell">${item.id}</td>
                     <td class="keywords-cell">${item.name}</td>
                     <td class="keywords-cell">${item.subtitle}</td>
                 `;
-                
+
                 tableBodyNS.appendChild(row);
             });
 
@@ -1211,25 +1310,25 @@
         function displayComparisonNS(data) {
             comparisonDataNS = data;
             comparisonTableBodyNS.innerHTML = '';
-            
+
             const changedCount = data.filter(item => item.nameChanged || item.subtitleChanged).length;
-            
+
             data.forEach(item => {
                 const row = document.createElement('tr');
                 if (item.isNew) {
                     row.classList.add('new-row');
                 }
-                
+
                 const nameClass = item.nameChanged ? 'changed-cell' : '';
                 const subtitleClass = item.subtitleChanged ? 'changed-cell' : '';
-                
+
                 row.innerHTML = `
                     <td><span class="country-code">${item.countryCode}</span></td>
                     <td class="id-cell">${item.id}</td>
                     <td class="keywords-cell ${nameClass}">${item.name}</td>
                     <td class="keywords-cell ${subtitleClass}">${item.subtitle}</td>
                 `;
-                
+
                 comparisonTableBodyNS.appendChild(row);
             });
 
@@ -1240,13 +1339,13 @@
 
         function displayExecutionResultsNS(results) {
             executionResultsNS.innerHTML = '';
-            
+
             results.forEach((result, index) => {
                 const item = document.createElement('div');
                 item.className = `execution-item ${result.status}`;
-                
+
                 const statusIcon = result.status === 'success' ? '✓' : '✗';
-                
+
                 item.innerHTML = `
                     <div class="execution-status">${statusIcon}</div>
                     <div class="execution-info">
@@ -1257,10 +1356,10 @@
                         <div class="execution-message">${result.message}</div>
                     </div>
                 `;
-                
+
                 executionResultsNS.appendChild(item);
             });
-            
+
             const successCount = results.filter(r => r.status === 'success').length;
             executionCountNS.textContent = `${successCount}/${results.length} Başarılı`;
             executionSectionNS.classList.add('show');
@@ -1280,7 +1379,7 @@
                 const id = item.id || '';
                 const name = (item.name || '').replace(/"/g, '""');
                 const subtitle = (item.subtitle || '').replace(/"/g, '""');
-                
+
                 csvRows.push(`${countryCode},${id},"${name}","${subtitle}"`);
             });
 
@@ -1288,14 +1387,14 @@
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            
+
             link.setAttribute('href', url);
             link.setAttribute('download', 'appinfo_export.csv');
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
+
             showMessageNS('CSV dosyası indirildi!', 'success');
         }
 
@@ -1303,9 +1402,9 @@
 
         formNS.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const jsonText = jsonInputNS.value.trim();
-            
+
             if (!jsonText) {
                 showMessageNS('Lütfen JSON verisini girin', 'error');
                 return;
@@ -1314,7 +1413,7 @@
             try {
                 const parsedJson = JSON.parse(jsonText);
                 currentAppInfoJson = parsedJson;
-                
+
                 submitBtnNS.disabled = true;
                 submitBtnNS.textContent = 'İşleniyor...';
 
@@ -1330,11 +1429,11 @@
                 states.forEach((state, index) => {
                     const optionDiv = document.createElement('div');
                     optionDiv.className = 'state-option';
-                    
-                    const badgeHtml = state === 'PREPARE_FOR_SUBMISSION' 
-                        ? '<span class="state-badge">Yeni Versiyon - Güncellenmesi Gereken</span>' 
+
+                    const badgeHtml = state === 'PREPARE_FOR_SUBMISSION'
+                        ? '<span class="state-badge">Yeni Versiyon - Güncellenmesi Gereken</span>'
                         : '';
-                    
+
                     optionDiv.innerHTML = `
                         <input type="radio" name="appState" id="state-${index}" value="${state}" ${index === 0 ? 'checked' : ''}>
                         <label class="state-label" for="state-${index}">
@@ -1342,7 +1441,7 @@
                             ${badgeHtml}
                         </label>
                     `;
-                    optionDiv.onclick = function() {
+                    optionDiv.onclick = function () {
                         document.getElementById(`state-${index}`).checked = true;
                         document.querySelectorAll('.state-option').forEach(opt => opt.classList.remove('selected'));
                         this.classList.add('selected');
@@ -1354,7 +1453,7 @@
                 selectStateBtn.style.display = 'block';
                 stateSelectionSection.classList.add('show');
                 showMessageNS('State seçenekleri gösteriliyor', 'success');
-                
+
             } catch (error) {
                 showMessageNS('Geçersiz JSON formatı! Lütfen doğru bir JSON girin.', 'error');
             } finally {
@@ -1365,7 +1464,7 @@
 
         selectStateBtn.addEventListener('click', async () => {
             const selectedState = document.querySelector('input[name="appState"]:checked')?.value;
-            
+
             if (!selectedState) {
                 showMessageNS('Lütfen bir state seçin', 'error');
                 return;
@@ -1380,7 +1479,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         jsonData: currentAppInfoJson,
                         selectedState: selectedState
                     })
@@ -1395,7 +1494,7 @@
                     showMessageNS('Hata: ' + result.error, 'error');
                     resultsSectionNS.classList.remove('show');
                 }
-                
+
             } catch (error) {
                 showMessageNS('Hata oluştu: ' + error.message, 'error');
                 resultsSectionNS.classList.remove('show');
@@ -1408,18 +1507,18 @@
         function parseCSVAppInfo(text) {
             const lines = text.split('\n');
             const result = [];
-            
+
             for (let i = 1; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (!line) continue;
-                
+
                 const parts = [];
                 let current = '';
                 let inQuotes = false;
-                
+
                 for (let j = 0; j < line.length; j++) {
                     const char = line[j];
-                    
+
                     if (char === '"') {
                         inQuotes = !inQuotes;
                     } else if (char === ',' && !inQuotes) {
@@ -1430,7 +1529,7 @@
                     }
                 }
                 parts.push(current);
-                
+
                 if (parts.length >= 4) {
                     result.push({
                         countryCode: parts[0],
@@ -1440,15 +1539,15 @@
                     });
                 }
             }
-            
+
             return result;
         }
 
         csvFormNS.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const file = csvFileNS.files[0];
-            
+
             if (!file) {
                 showMessageNS('Lütfen bir CSV dosyası seçin', 'error');
                 return;
@@ -1458,7 +1557,7 @@
                 const text = await file.text();
                 const csvData = parseCSVAppInfo(text);
                 currentCsvDataNS = csvData;
-                
+
                 csvSubmitBtnNS.disabled = true;
                 csvSubmitBtnNS.textContent = 'Karşılaştırılıyor...';
 
@@ -1467,9 +1566,9 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         csvData,
-                        originalData: originalAppInfoData 
+                        originalData: originalAppInfoData
                     })
                 });
 
@@ -1491,9 +1590,9 @@
 
         curlFormNS2.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const curlCommand = curlInputNS2.value.trim();
-            
+
             if (!curlCommand) {
                 showMessageNS('Lütfen curl komutunu girin', 'error');
                 return;
@@ -1505,7 +1604,7 @@
             }
 
             const changedData = comparisonDataNS.filter(item => item.nameChanged || item.subtitleChanged);
-            
+
             if (changedData.length === 0) {
                 showMessageNS('Değişiklik bulunamadı! Güncellemeye gerek yok.', 'error');
                 return;
@@ -1514,7 +1613,7 @@
             try {
                 curlSubmitBtnNS2.disabled = true;
                 curlSubmitBtnNS2.textContent = 'Çalıştırılıyor...';
-                
+
                 executionResultsNS.innerHTML = '<div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>';
                 executionSectionNS.classList.add('show');
 
@@ -1522,7 +1621,7 @@
                     const item = document.createElement('div');
                     item.className = 'execution-item processing';
                     item.id = `exec-ns-${index}`;
-                    
+
                     item.innerHTML = `
                         <div class="execution-status">⏳</div>
                         <div class="execution-info">
@@ -1533,7 +1632,7 @@
                             <div class="execution-message">İşleniyor...</div>
                         </div>
                     `;
-                    
+
                     executionResultsNS.appendChild(item);
                 });
 
@@ -1542,9 +1641,9 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
-                        curlCommand, 
-                        csvData: changedData 
+                    body: JSON.stringify({
+                        curlCommand,
+                        csvData: changedData
                     })
                 });
 
@@ -1564,7 +1663,371 @@
             }
         });
 
+        // ============ WHAT'S NEW TAB ============
+        const formWN = document.getElementById('jsonFormWN');
+        const jsonInputWN = document.getElementById('jsonInputWN');
+        const submitBtnWN = document.getElementById('submitBtnWN');
+        const messageDivWN = document.getElementById('messageWN');
+        const resultsSectionWN = document.getElementById('resultsSectionWN');
+        const tableBodyWN = document.getElementById('tableBodyWN');
+        const recordCountWN = document.getElementById('recordCountWN');
+        const downloadCsvBtnWN = document.getElementById('downloadCsvBtnWN');
+        const csvFormWN = document.getElementById('csvFormWN');
+        const csvFileWN = document.getElementById('csvFileWN');
+        const csvSubmitBtnWN = document.getElementById('csvSubmitBtnWN');
+        const csvSectionWN = document.getElementById('csvSectionWN');
+        const comparisonSectionWN = document.getElementById('comparisonSectionWN');
+        const comparisonTableBodyWN = document.getElementById('comparisonTableBodyWN');
+        const comparisonCountWN = document.getElementById('comparisonCountWN');
+        const curlFormWN = document.getElementById('curlFormWN');
+        const curlInputWN = document.getElementById('curlInputWN');
+        const curlSubmitBtnWN = document.getElementById('curlSubmitBtnWN');
+        const curlSectionWN = document.getElementById('curlSectionWN');
+        const executionSectionWN = document.getElementById('executionSectionWN');
+        const executionResultsWN = document.getElementById('executionResultsWN');
+        const executionCountWN = document.getElementById('executionCountWN');
+
+        let currentWhatsNewData = [];
+        let originalWhatsNewData = [];
+        let comparisonDataWN = [];
+
+        function showMessageWN(text, type) {
+            messageDivWN.textContent = text;
+            messageDivWN.className = `message ${type} show`;
+            setTimeout(() => {
+                messageDivWN.classList.remove('show');
+            }, 5000);
+        }
+
+        function processWhatsNewJson(jsonData) {
+            const data = jsonData.data || [];
+            const results = [];
+
+            data.forEach(item => {
+                if (item.type === 'appStoreVersionLocalizations' && item.attributes) {
+                    results.push({
+                        locale: item.attributes.locale || '',
+                        id: item.id || '',
+                        whatsNew: item.attributes.whatsNew || ''
+                    });
+                }
+            });
+
+            // Sort by locale
+            results.sort((a, b) => a.locale.localeCompare(b.locale));
+
+            return results;
+        }
+
+        function displayResultsWN(data) {
+            currentWhatsNewData = data;
+            originalWhatsNewData = data;
+            tableBodyWN.innerHTML = '';
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
+                    <td><span class="country-code">${item.locale}</span></td>
+                    <td class="id-cell">${item.id}</td>
+                    <td class="keywords-cell">${item.whatsNew || '(boş)'}</td>
+                `;
+
+                tableBodyWN.appendChild(row);
+            });
+
+            recordCountWN.textContent = `${data.length} Kayıt`;
+            resultsSectionWN.classList.add('show');
+            csvSectionWN.classList.add('show');
+        }
+
+        function downloadCSVWhatsNew() {
+            if (currentWhatsNewData.length === 0) {
+                showMessageWN('İndirilecek veri yok!', 'error');
+                return;
+            }
+
+            const csvRows = [];
+            csvRows.push('locale,id,whatsNew');
+
+            currentWhatsNewData.forEach(item => {
+                const locale = item.locale || '';
+                const id = item.id || '';
+                const whatsNew = (item.whatsNew || '').replace(/"/g, '""').replace(/\n/g, '\\n');
+
+                csvRows.push(`${locale},${id},"${whatsNew}"`);
+            });
+
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'whatsnew_export.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showMessageWN('CSV dosyası indirildi!', 'success');
+        }
+
+        downloadCsvBtnWN.addEventListener('click', downloadCSVWhatsNew);
+
+        function parseCSVWhatsNew(text) {
+            const lines = text.split('\n');
+            const result = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const parts = [];
+                let current = '';
+                let inQuotes = false;
+
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
+
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        parts.push(current);
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                parts.push(current);
+
+                if (parts.length >= 3) {
+                    result.push({
+                        locale: parts[0],
+                        id: parts[1],
+                        whatsNew: parts[2].replace(/\\n/g, '\n')
+                    });
+                }
+            }
+
+            return result;
+        }
+
+        function displayComparisonWN(data) {
+            comparisonDataWN = data;
+            comparisonTableBodyWN.innerHTML = '';
+
+            const changedCount = data.filter(item => item.whatsNewChanged).length;
+
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                if (item.isNew) {
+                    row.classList.add('new-row');
+                }
+
+                const whatsNewClass = item.whatsNewChanged ? 'changed-cell' : '';
+
+                row.innerHTML = `
+                    <td><span class="country-code">${item.locale}</span></td>
+                    <td class="id-cell">${item.id}</td>
+                    <td class="keywords-cell ${whatsNewClass}">${item.whatsNew || '(boş)'}</td>
+                `;
+
+                comparisonTableBodyWN.appendChild(row);
+            });
+
+            comparisonCountWN.textContent = `${data.length} Kayıt (${changedCount} Değişiklik)`;
+            comparisonSectionWN.classList.add('show');
+            curlSectionWN.classList.add('show');
+        }
+
+        function displayExecutionResultsWN(results) {
+            executionResultsWN.innerHTML = '';
+
+            results.forEach((result, index) => {
+                const item = document.createElement('div');
+                item.className = `execution-item ${result.status}`;
+
+                const statusIcon = result.status === 'success' ? '✓' : '✗';
+
+                item.innerHTML = `
+                    <div class="execution-status">${statusIcon}</div>
+                    <div class="execution-info">
+                        <div class="execution-country">
+                            <span class="country-code">${result.locale}</span>
+                        </div>
+                        <div class="execution-id">ID: ${result.id}</div>
+                        <div class="execution-message">${result.message}</div>
+                    </div>
+                `;
+
+                executionResultsWN.appendChild(item);
+            });
+
+            const successCount = results.filter(r => r.status === 'success').length;
+            executionCountWN.textContent = `${successCount}/${results.length} Başarılı`;
+            executionSectionWN.classList.add('show');
+        }
+
+        formWN.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const jsonText = jsonInputWN.value.trim();
+
+            if (!jsonText) {
+                showMessageWN('Lütfen JSON verisini girin', 'error');
+                return;
+            }
+
+            try {
+                const parsedJson = JSON.parse(jsonText);
+
+                submitBtnWN.disabled = true;
+                submitBtnWN.textContent = 'İşleniyor...';
+
+                const processedData = processWhatsNewJson(parsedJson);
+
+                if (processedData.length === 0) {
+                    showMessageWN('JSON içinde geçerli localization verisi bulunamadı!', 'error');
+                    return;
+                }
+
+                showMessageWN(`${processedData.length} kayıt başarıyla işlendi!`, 'success');
+                displayResultsWN(processedData);
+
+            } catch (error) {
+                showMessageWN('Geçersiz JSON formatı! Lütfen doğru bir JSON girin.', 'error');
+                resultsSectionWN.classList.remove('show');
+            } finally {
+                submitBtnWN.disabled = false;
+                submitBtnWN.textContent = 'İşleme Devam Et';
+            }
+        });
+
+        csvFormWN.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const file = csvFileWN.files[0];
+
+            if (!file) {
+                showMessageWN('Lütfen bir CSV dosyası seçin', 'error');
+                return;
+            }
+
+            try {
+                const text = await file.text();
+                const csvData = parseCSVWhatsNew(text);
+
+                csvSubmitBtnWN.disabled = true;
+                csvSubmitBtnWN.textContent = 'Karşılaştırılıyor...';
+
+                // Compare with original data
+                const comparisonResults = csvData.map(csvItem => {
+                    const originalItem = originalWhatsNewData.find(o => o.id === csvItem.id);
+
+                    if (!originalItem) {
+                        return {
+                            ...csvItem,
+                            isNew: true,
+                            whatsNewChanged: true
+                        };
+                    }
+
+                    return {
+                        ...csvItem,
+                        isNew: false,
+                        whatsNewChanged: csvItem.whatsNew !== originalItem.whatsNew
+                    };
+                });
+
+                const changedCount = comparisonResults.filter(item => item.whatsNewChanged).length;
+                showMessageWN(`Karşılaştırma tamamlandı! ${changedCount} değişiklik bulundu.`, 'success');
+                displayComparisonWN(comparisonResults);
+
+            } catch (error) {
+                showMessageWN('CSV dosyası işlenirken hata oluştu: ' + error.message, 'error');
+            } finally {
+                csvSubmitBtnWN.disabled = false;
+                csvSubmitBtnWN.textContent = 'Karşılaştır';
+            }
+        });
+
+        curlFormWN.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const curlCommand = curlInputWN.value.trim();
+
+            if (!curlCommand) {
+                showMessageWN('Lütfen curl komutunu girin', 'error');
+                return;
+            }
+
+            if (comparisonDataWN.length === 0) {
+                showMessageWN('Önce CSV karşılaştırması yapın', 'error');
+                return;
+            }
+
+            const changedData = comparisonDataWN.filter(item => item.whatsNewChanged);
+
+            if (changedData.length === 0) {
+                showMessageWN('Değişiklik bulunamadı! Güncellemeye gerek yok.', 'error');
+                return;
+            }
+
+            try {
+                curlSubmitBtnWN.disabled = true;
+                curlSubmitBtnWN.textContent = 'Çalıştırılıyor...';
+
+                executionResultsWN.innerHTML = '<div class="progress-bar"><div class="progress-fill" style="width: 0%"></div></div>';
+                executionSectionWN.classList.add('show');
+
+                changedData.forEach((row, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'execution-item processing';
+                    item.id = `exec-wn-${index}`;
+
+                    item.innerHTML = `
+                        <div class="execution-status">⏳</div>
+                        <div class="execution-info">
+                            <div class="execution-country">
+                                <span class="country-code">${row.locale}</span>
+                            </div>
+                            <div class="execution-id">ID: ${row.id}</div>
+                            <div class="execution-message">İşleniyor...</div>
+                        </div>
+                    `;
+
+                    executionResultsWN.appendChild(item);
+                });
+
+                const response = await fetch('/api/execute-curl-whatsnew', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        curlCommand,
+                        csvData: changedData
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessageWN(`${changedData.length} değişiklik için işlemler tamamlandı!`, 'success');
+                    displayExecutionResultsWN(result.results);
+                } else {
+                    showMessageWN('Hata: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showMessageWN('Curl çalıştırılırken hata oluştu: ' + error.message, 'error');
+            } finally {
+                curlSubmitBtnWN.disabled = false;
+                curlSubmitBtnWN.textContent = 'Sadece Değişenleri Güncelle';
+            }
+        });
+
     </script>
 </body>
-</html>
 
+</html>

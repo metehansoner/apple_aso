@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -470,6 +470,126 @@ app.post('/api/execute-curl-appinfo', async (req, res) => {
                 
                 results.push({
                     countryCode: row.countryCode,
+                    id: row.id,
+                    status: isSuccess ? 'success' : 'error',
+                    statusCode: statusCode,
+                    message: isSuccess ? `Status: ${statusCode} - Başarılı` : `Status: ${statusCode} - Hata: ${errorMessage.substring(0, 50)}`
+                });
+            }
+        }
+
+        res.json({ 
+            success: true, 
+            message: 'Tüm istekler tamamlandı',
+            results 
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Bir hata oluştu: ' + error.message });
+    }
+});
+
+// What's New curl endpoint
+app.post('/api/execute-curl-whatsnew', async (req, res) => {
+    try {
+        const { curlCommand, csvData } = req.body;
+        
+        if (!curlCommand || !csvData) {
+            return res.status(400).json({ error: 'Curl komutu ve CSV verisi gereklidir' });
+        }
+
+        const results = [];
+
+        const dataRawMatch = curlCommand.match(/--data-raw\s+'([^']+)'/);
+        if (!dataRawMatch) {
+            return res.status(400).json({ error: 'Curl komutunda --data-raw bulunamadı' });
+        }
+
+        const originalDataRaw = dataRawMatch[1];
+        const dataObj = JSON.parse(originalDataRaw);
+        const originalId = dataObj.data?.id;
+
+        const urlIdMatch = curlCommand.match(/appStoreVersionLocalizations\/([a-f0-9-]+)/i);
+        const urlOriginalId = urlIdMatch ? urlIdMatch[1] : originalId;
+
+        for (const row of csvData) {
+            try {
+                const newDataObj = JSON.parse(originalDataRaw);
+                
+                if (newDataObj.data) {
+                    newDataObj.data.id = row.id;
+                    if (newDataObj.data.attributes) {
+                        newDataObj.data.attributes.whatsNew = row.whatsNew;
+                    }
+                }
+                
+                let modifiedCurl = curlCommand;
+                
+                if (urlOriginalId) {
+                    modifiedCurl = modifiedCurl.replace(
+                        new RegExp(`appStoreVersionLocalizations/${urlOriginalId}`, 'g'),
+                        `appStoreVersionLocalizations/${row.id}`
+                    );
+                }
+                
+                modifiedCurl = modifiedCurl.replace(
+                    /--data-raw\s+'[^']+'/,
+                    `--data-raw '${JSON.stringify(newDataObj)}'`
+                );
+
+                console.log(`\n🔄 Locale: ${row.locale} - ID: ${row.id}`);
+                console.log(`📝 What's New: ${(row.whatsNew || '').substring(0, 50)}...`);
+
+                const curlWithVerbose = modifiedCurl.replace(/^curl/, 'curl -w "\\nHTTP_STATUS:%{http_code}"');
+                
+                const { stdout, stderr } = await execPromise(curlWithVerbose, {
+                    shell: '/bin/bash',
+                    maxBuffer: 1024 * 1024
+                });
+
+                let status = 'success';
+                let message = 'Başarılı';
+                let statusCode = 200;
+                
+                const statusMatch = stdout.match(/HTTP_STATUS:(\d+)/);
+                if (statusMatch) {
+                    statusCode = parseInt(statusMatch[1]);
+                    if (statusCode >= 200 && statusCode < 300) {
+                        status = 'success';
+                        message = `Status: ${statusCode} - Başarılı`;
+                    } else {
+                        status = 'error';
+                        message = `Status: ${statusCode} - Hata`;
+                    }
+                } else if (stderr && !stdout) {
+                    status = 'error';
+                    statusCode = 500;
+                    message = `Status: ${statusCode} - Hata: ${stderr.substring(0, 50)}`;
+                }
+
+                results.push({
+                    locale: row.locale,
+                    id: row.id,
+                    status: status,
+                    statusCode: statusCode,
+                    message: message
+                });
+            } catch (error) {
+                const errorMessage = error.message || 'Bilinmeyen hata';
+                const isSuccess = errorMessage.includes('200') || 
+                                 errorMessage.includes('201') || 
+                                 errorMessage.includes('"data"');
+                
+                let statusCode = 500;
+                const statusMatch = errorMessage.match(/(\d+)/);
+                if (statusMatch) {
+                    const code = parseInt(statusMatch[1]);
+                    if (code >= 100 && code < 600) {
+                        statusCode = code;
+                    }
+                }
+                
+                results.push({
+                    locale: row.locale,
                     id: row.id,
                     status: isSuccess ? 'success' : 'error',
                     statusCode: statusCode,
